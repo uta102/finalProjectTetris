@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>game tetris</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+    canvas{
+        border:solid .2em rgb(89, 167, 202);
+        height: 90vh;;
+    }
+    </style>    
+</head>
+<body>
+        <audio src="./tetrisMusic.mp3" loop autoplay></audio>
+        <div id="score" class="score"></div>
+        <div class="bodyPageGame">
+            <a href="./login.html">
+                <input type="button" class="tombolLogout" value="Logout" id="logout"/>
+            </a>
+                <canvas id="tetris" width="240" height="400"></canvas> <!--buat papan permainan dengan elemen canvas-->
+                <script src="tetris.js"></script>
+        </div>
+</body>
+</html>
