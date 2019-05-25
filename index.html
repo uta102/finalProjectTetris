@@ -6,16 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Form Login</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="login.js"></script>
+    <script src="./index.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="kotakTengah">
             <p><b>SILAHKAN LOGIN</b></p>
             <form>
-                <input type="text" name="username" class="formLogin" id="username" placeholder="Username..." onkeydown="handleEnter(event)"/>
-                <input type="password" name="password" class="formLogin" id="password" placeholder="Password..." onkeydown="handleEnter(event)"/>
-                <input type="button" class="tombolLogin" value="LOGIN" id="login" onclick ="getInfo()"/>
+                <input type="text" name="nickname" class="formLogin" id="nickname1" placeholder="Nickname..." onkeydown="handleEnter(event)"/>
+                <input type="button" class="tombolLogin" value="login" id="login" onclick ="infoLogin()" />
                 <p id="peringatan"></p>
             </form>
         </div>

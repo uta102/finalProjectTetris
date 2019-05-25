@@ -50,13 +50,13 @@ function buatPotonganTetris(str) {
 
 const colors=[
     null,
-    'red',
-    'blue',
-    'grey',
-    'white',
-    'pink',
-    'green',
-    'yellow'
+    './image/red.png',
+    './image/purple.png',
+    './image/blue.png',
+    './image/lightBlue.png',
+    './image/green.png',
+    './image/yellow.png',
+    './image/orange.png'
 ];
 
 //membuat const arena dan obj player bisa bertabrakan / stuck
@@ -85,31 +85,33 @@ function buatMatrix(w, h) {
 }
 
 const arena = buatMatrix(12,20) //jumlah array pada arena 12 kolom 20 baris
-// console.log(arena); console.table(arena)
 
 //papan game area yang akan berisi game tetris
 function draw(){
     context.fillStyle = 'rgb(0, 0, 0)'; //properti canvas fillstyle mengisi papan game dengan warna
     context.fillRect(0, 0, canvas.width, canvas.height); //dengan  fillrect mengatur posisi fill papan game dan mengatur lebar tingginya
     
+    updateScore();
     drawMatrix(arena, {kolom:0, baris:0});
     drawMatrix(player.matrix, player.pos) //posisi tetris pieces 
 }
 
 //posisi tetris pieces
 function drawMatrix(matrix, offset) {
-    matrix.forEach (function(row, baris) { //foreach adalah method memanggil fungsi yang disediakan satu kali untuk setiap elemen dalam sebuah array, secara berurutan.
+    matrix.forEach (function(row, baris) {
         row.forEach(function (value, kolom){
             if (value !== 0){
-                context.fillStyle = colors[value]; //warna tetris pieces 
-                context.fillRect(kolom + offset.kolom, //untuk papan gamenya
-                                 baris + offset.baris,
-                                 1, 1); //lebar dan tinggi potongan tetris
+                // context.fillStyle = colors[value]; //warna tetris pieces 
+                // context.fillRect(kolom + offset.kolom, //untuk papan gamenya
+                //                  baris + offset.baris,
+                //                  1, 1); //lebar dan tinggi potongan tetris
+                let imgTag=document.createElement("IMG");
+					imgTag.src=colors[value];
+					context.drawImage(imgTag , kolom + offset.kolom , baris + offset.baris , 1 , 1);
             }
         });
     });
 }
-// console.log(drawMatrix(matrix,offset))
 
 //merge posisi baris dan kolom arena dan player
 function merge(arena, player) {
@@ -127,30 +129,26 @@ function playerDrop() {
     if (batasPapanGame(arena, player)) { 
         player.pos.baris--; 
         merge(arena, player)
-        playerRiset ();
         sapuArena ();
+        playerRiset ();
         updateScore ();
     }
-    dropCounter = 0 //bila sudah mencapai lebih dari dropInterval dropCounter di reset kembali
+    time = 0 //bila sudah mencapai lebih dari dropInterval time di reset kembali
 }
 
-let dropCounter = 0 
-let dropInterval = 1000
-
-let lastTime = 0;
-function update(time = 0){
-    // console.log(time)
-    const deltaTime = time - lastTime;
-    lastTime = time
-    dropCounter += deltaTime;
-    // console.log(dropCounter)
-    if (dropCounter > dropInterval) {
+//membuat matrix berjalan
+let dropInterval = 60;
+let time = 0;
+function update(){
+    time++
+    console.log(time)
+    if (time > dropInterval) {
       playerDrop();
     }
     draw();
-    requestAnimationFrame(update)
 }
 
+//menghilangkan bug rotasi kanan kiri atas bawah
 function playerRotasi(dir) {
     const pos = player.pos.kolom;
     let offset = 1;
@@ -166,6 +164,7 @@ function playerRotasi(dir) {
     }
 }
 
+//rotasi matrix atau potongan tetris
 function rotasi(matrix, dir) {
     for (let baris = 0; baris < matrix.length; baris++) {
         for (let kolom = 0; kolom < baris; kolom++) {
@@ -183,12 +182,6 @@ function rotasi(matrix, dir) {
     }
 }
 
-function playerMove(arah) {
-    player.pos.kolom += arah
-    if(batasPapanGame(arena, player))
-    player.pos.kolom -= arah
-}
-
 //reset potongan tetris untuk merandom matrix tetris yang keluar
 function playerRiset() {
     const pieces = 'ILJOTSZ'
@@ -199,7 +192,7 @@ function playerRiset() {
     if (batasPapanGame(arena, player)){
         arena.forEach(row => row.fill(0))
         player.score = 0;
-        updateScore();
+        gameRun=false;
     }
 }
 
@@ -226,6 +219,12 @@ const player = {
     score : 0,
 }
 
+function playerMove(arah) {
+    player.pos.kolom += arah
+    if(batasPapanGame(arena, player))
+    player.pos.kolom -= arah
+}
+
 //menggunakan event keydown untuk menentukan keycode untuk menggerakan kekanan dan kiri si potongan tetris
 document.addEventListener('keydown', control);
 function control(event) {
@@ -234,17 +233,57 @@ function control(event) {
     } else if (event.keyCode == 39){
         playerMove(+1)
     } else if (event.keyCode == 40){
-        playerDrop ();
+        if(gameRun){
+            playerDrop();
+        }
     } else if (event.keyCode == 38){
         playerRotasi (+1)
     }
 }
 
-function updateScore() {
-    document.getElementById("score").innerText = player.score;
+function updateScore(){
+    context.font="bold 1px Comic Sans MS";
+    context.fillStyle="#ffffff";
+    context.textAlign="left";
+    context.textBaseline="top";
+    context.fillText("Score:"+ player.score, 0.2,0);
+    if(player.score > 50){
+        dropInterval = 40
+    } else if (player.score > 70){
+        dropInterval = 10
+    } else {
+        dropInterval = 60
+    }
+};
+
+let gameLoop;
+let gamerun = false;
+playerRiset()
+update()
+gameOver()
+
+function gameOver() {
+	clearInterval(gameLoop);
+	context.font="2px Comic Sans MS";
+	context.fillStyle="#ffffff";
+	context.textAlign="center";
+	context.textBaseline="middle";
+	context.fillText("Game Over",(canvas.width/20)/2,(canvas.width/20)/2);
+	document.getElementById("start_game").disabled=false;
 }
 
+document.getElementById("start_game").onclick=function(){
+    gameRun=true;
+    playerRiset();
+    gameLoop=setInterval(function(){
+        if(gameRun){
+            update();
+        }
+        else{
+            gameOver();
+        }
+    },10);
+    this.disabled=true;
+};
 
-playerRiset()
-updateScore()
-update()
+// document.getElementById("username").innerHTML = sessionStorage.getItem("nickname");

@@ -15,13 +15,16 @@
 </head>
 <body>
         <audio src="./tetrisMusic.mp3" loop autoplay></audio>
-        <div id="score" class="score"></div>
         <div class="bodyPageGame">
+                <div id="score" class="score"></div>
             <a href="./login.html">
                 <input type="button" class="tombolLogout" value="Logout" id="logout"/>
             </a>
+                <div id="nickname" class="score"></div>
                 <canvas id="tetris" width="240" height="400"></canvas> <!--buat papan permainan dengan elemen canvas-->
+                <button type="button" id="start_game">Start</button>
                 <script src="tetris.js"></script>
+                
         </div>
 </body>
 </html>
