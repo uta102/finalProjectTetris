@@ -11,9 +11,9 @@
     <div class="container">
         <div class="kotakTengah">
             <p><b>SILAHKAN LOGIN</b></p>
-            <form>
+            <form onkeydown="handleEnter(event)">
                 <input type="text" name="nickname" class="formLogin" id="nickname1" placeholder="Nickname..." onkeydown="handleEnter(event)"/>
-                <input type="button" class="tombolLogin" value="login" id="login" onclick ="getInfo()" />
+                <input type="button" class="tombolLogin" value="login" id="login" onclick ="getInfo()" onkeydown="handleEnter(event)"/>
                 <p id="peringatan"></p>
             </form>
         </div>

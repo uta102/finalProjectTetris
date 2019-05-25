@@ -1,5 +1,6 @@
 function handleEnter(event) {
     if(event.keyCode == 13){
+        var nickName = document.getElementById("nickname1")
         getInfo()
     }
   }
@@ -11,7 +12,7 @@ function getInfo() {
     var storage = localStorage.getItem('nickName');
     if (storage) {
         window.location.replace("./test.html")
-    } else if (storage == "") {
+    } else {
         document.getElementById('peringatan').innerHTML = 'Isi nickname';
     }
 }
