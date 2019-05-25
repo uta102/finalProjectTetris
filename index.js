@@ -4,13 +4,12 @@ function handleEnter(event) {
     }
   }
 
-  var nickname = document.getElementById("nickname1")
+  var nickName = document.getElementById("nickname1")
 function getInfo() {
-    
-    localStorage.setItem('nickname', nickname1.value)
+    localStorage.setItem('nickName', nickname1.value)
 
-    var storage = localStorage.getItem('username');
-    if (storage == nickname) {
+    var storage = localStorage.getItem('nickName');
+    if (storage) {
         window.location.replace("./test.html")
     } else if (storage == "") {
         document.getElementById('peringatan').innerHTML = 'Isi nickname';
