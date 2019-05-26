@@ -3,7 +3,6 @@ const context = canvas.getContext('2d');
 
 context.scale(20, 20); //dengan scale untuk menentuka skala context (skala si potongan tetris)
 
-//potongan matrix
 function buatPotonganTetris(str) {
     if ( str === 'T') {
         return [
@@ -50,7 +49,6 @@ function buatPotonganTetris(str) {
     }
 }
 
-//warna potongan tetris
 const colors=[
     null,
     './image/red.png',
@@ -127,9 +125,8 @@ function merge(arena, player) {
     })
 }
 
-//yang terjadi jika kondisi time > dropinterval
 function playerDrop() {
-    player.pos.baris++
+    player.pos.baris++  //baris untuk player posisi di tambah 
     if (batasPapanGame(arena, player)) { 
         player.pos.baris--; 
         merge(arena, player)
@@ -137,7 +134,7 @@ function playerDrop() {
         playerRiset ();
         updateScore ();
     }
-    time = 0
+    time = 0 //bila sudah mencapai lebih dari dropInterval time di reset kembali
 }
 
 //membuat matrix berjalan
@@ -189,11 +186,12 @@ function rotasi(matrix, dir) {
 //reset potongan tetris untuk merandom matrix tetris yang keluar
 function playerRiset() {
     const pieces = 'ILJOTSZ'
-    player.matrix = buatPotonganTetris (pieces [pieces.length * Math.random() | 0]);
+    player.matrix = buatPotonganTetris (pieces [pieces.length * Math.random() | 0])
     player.pos.baris = 0;
-    player.pos.kolom = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+    player.pos.kolom = (arena[0].length / 2 | 0) -
+                       (player.matrix[0].length / 2 | 0)
     if (batasPapanGame(arena, player)){
-        arena.forEach(row => row.fill(0));
+        arena.forEach(row => row.fill(0))
         player.score = 0;
         gameRun=false;
     }
@@ -209,7 +207,7 @@ function sapuArena() {
             }
         }
     const row = arena.splice(baris, 1)[0].fill(0)
-    arena.unshift(row);
+    arena.unshift(row)
     ++baris;
     player.score += rowcount * 10;
     rowcount *= 2;
@@ -222,7 +220,6 @@ const player = {
     score : 0,
 }
 
-//player move kanan dan kiri
 function playerMove(arah) {
     player.pos.kolom += arah
     if(batasPapanGame(arena, player))
@@ -251,14 +248,26 @@ function updateScore(){
     context.textAlign="left";
     context.textBaseline="top";
     context.fillText("Score:"+ player.score, 0.2,0);
-    if(player.score < 100){
-        dropInterval = 60
-    } else if (player.score >= 101 && player.score <= 200){
-        dropInterval = 40
-    } else if (player.score >= 201 && player.score <= 300){
-        dropInterval = 30
+    if(player.score < 50){
+        dropInterval = 60;
+    } else if (player.score >= 51 && player.score <= 100){
+        dropInterval = 20;
+    } else if (player.score >= 101 && player.score <= 150){
+        dropInterval = 30;
+    } else if (player.score >= 151 && player.score <= 200){
+        dropInterval = 20;
+    } else if (player.score >= 201 && player.score <= 250){
+        dropInterval = 10;
+    } else if (player.score >= 251){
+        dropInterval = 5;
     }
 };
+
+let gameLoop;
+let gamerun = false;
+playerRiset()
+update()
+gameOver()
 
 function gameOver() {
 	clearInterval(gameLoop);
@@ -286,9 +295,3 @@ document.getElementById("start_game").onclick=function(){
 
 var storage = localStorage.getItem('nickName');
 document.getElementById('namanick').innerHTML = 'Selamat Datang ' +storage;
-
-let gameLoop;
-let gamerun = false;
-playerRiset()
-update()
-gameOver()
