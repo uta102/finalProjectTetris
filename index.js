@@ -10,9 +10,9 @@ function getInfo() {
     localStorage.setItem('nickName', nickname1.value)
     var storage = localStorage.getItem('nickName');
     if (storage) {
-        window.location.replace("./test.html")
+        window.location.replace("./pilihLevel.html")
     } else {
-        document.getElementById('peringatan').innerHTML = 'Isi nickname';
+        document.getElementById('peringatan').innerHTML = 'Isi Nickname!!';
     }
 }
         
