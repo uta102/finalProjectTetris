@@ -251,15 +251,15 @@ function updateScore(){
     if(player.score < 50){
         dropInterval = 60;
     } else if (player.score >= 51 && player.score <= 100){
-        dropInterval = 20;
+        dropInterval = 50;
     } else if (player.score >= 101 && player.score <= 150){
-        dropInterval = 30;
+        dropInterval = 40;
     } else if (player.score >= 151 && player.score <= 200){
-        dropInterval = 20;
+        dropInterval = 30;
     } else if (player.score >= 201 && player.score <= 250){
+        dropInterval = 20;
+    } else if (player.score > 251){
         dropInterval = 10;
-    } else if (player.score >= 251){
-        dropInterval = 5;
     }
 };
 

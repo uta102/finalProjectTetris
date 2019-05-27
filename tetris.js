@@ -254,9 +254,9 @@ function updateScore(){
     if(player.score < 100){
         dropInterval = 60
     } else if (player.score >= 101 && player.score <= 200){
-        dropInterval = 40
-    } else if (player.score >= 201 && player.score <= 300){
-        dropInterval = 30
+        dropInterval = 45
+    } else if (player.score > 201){
+        dropInterval = 35
     }
 };
 

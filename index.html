@@ -11,11 +11,11 @@
     <div class="container">
         <div class="kotakTengah">
             <p><b>SILAHKAN LOGIN</b></p>
-            <form onkeydown="handleEnter(event)">
+            <div>
                 <input type="text" name="nickname" class="formLogin" id="nickname1" placeholder="Nickname..." onkeydown="handleEnter(event)"/>
-                <input type="button" class="tombolLogin" value="login" id="login" onclick ="getInfo()" onkeydown="handleEnter(event)"/>
+                <input type="button" class="tombolLogin" value="login" id="login" onclick ="getInfo()"/>
                 <p id="peringatan"></p>
-            </form>
+            </div>
         </div>
     </div>
     <script src="./index.js"></script>
