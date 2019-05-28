@@ -167,8 +167,17 @@ body{
 
 .namanick{
 	position: absolute;
-    left: 0px;
-    top: 13px;
+    left: 0%;
+    top: 2%;
+		z-index: 1;
+		color: white;
+		font-weight: bold;
+}
+
+.audio{
+	position: fixed;
+    right: 0%;
+    bottom: 0%;
 		z-index: 1;
 		color: white;
 		font-weight: bold;

@@ -1,7 +1,15 @@
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 
-context.scale(20, 20); //dengan scale untuk menentuka skala context (skala si potongan tetris)
+//papan game area yang akan berisi game tetris
+function draw(){
+    context.fillStyle = 'rgb(0, 0, 0)'; //properti canvas fillstyle mengisi papan game dengan warna
+    context.fillRect(0, 0, canvas.width, canvas.height); //dengan  fillrect mengatur posisi fill papan game dan mengatur lebar tingginya
+    
+    updateScore();
+    drawMatrix(arena, {kolom:0, baris:0});
+    drawMatrix(player.matrix, player.pos) //posisi tetris pieces 
+}
 
 //potongan matrix
 function buatPotonganTetris(str) {
@@ -50,55 +58,6 @@ function buatPotonganTetris(str) {
     }
 }
 
-//warna potongan tetris
-const colors=[
-    null,
-    './image/red.png',
-    './image/purple.png',
-    './image/blue.png',
-    './image/lightBlue.png',
-    './image/green.png',
-    './image/yellow.png',
-    './image/orange.png'
-];
-
-//membuat const arena dan obj player bisa bertabrakan / stuck
-function batasPapanGame(arena, player) {
-    const m = player.matrix
-    const o = player.pos
-    for (let baris = 0; baris < m.length; baris++){
-        for (let kolom = 0; kolom < m[baris].length; kolom++) {
-            if (m [baris][kolom] !== 0 &&
-               (arena [baris + o.baris] && 
-                arena [baris + o.baris][kolom + o.kolom]) !== 0) {
-                return true
-            }
-        }
-    }
-    return false
-}
-
-//create matrix di dalam array agar potongan tetris / matrix berhenti
-function buatMatrix(w, h) {
-    const matrix = [];
-    while (h--) {
-        matrix.push(new Array(w).fill(0))
-    }
-    return matrix;
-}
-
-const arena = buatMatrix(12,20) //jumlah array pada arena 12 kolom 20 baris
-
-//papan game area yang akan berisi game tetris
-function draw(){
-    context.fillStyle = 'rgb(0, 0, 0)'; //properti canvas fillstyle mengisi papan game dengan warna
-    context.fillRect(0, 0, canvas.width, canvas.height); //dengan  fillrect mengatur posisi fill papan game dan mengatur lebar tingginya
-    
-    updateScore();
-    drawMatrix(arena, {kolom:0, baris:0});
-    drawMatrix(player.matrix, player.pos) //posisi tetris pieces 
-}
-
 //posisi tetris pieces
 function drawMatrix(matrix, offset) {
     matrix.forEach (function(row, baris) {
@@ -116,15 +75,36 @@ function drawMatrix(matrix, offset) {
     });
 }
 
-//merge posisi baris dan kolom arena dan player
-function merge(arena, player) {
-    player.matrix.forEach(function (row, baris) {
-        row.forEach(function (value, kolom) {
-            if (value !== 0){
-                arena [baris + player.pos.baris][kolom + player.pos.kolom] = value;
-            }
-        })
-    })
+//warna potongan tetris
+const colors=[
+    null,
+    './image/red.png',
+    './image/purple.png',
+    './image/blue.png',
+    './image/lightBlue.png',
+    './image/green.png',
+    './image/yellow.png',
+    './image/orange.png'
+];
+
+context.scale(20, 20); //dengan scale untuk menentuka skala context (skala si potongan tetris)\
+
+const player = {
+    pos: {kolom:5, baris:0},
+    matrix: null,
+    score : 0,
+}
+
+//membuat matrix berjalan
+let dropInterval = 60;
+let time = 0;
+function update(){
+    time++
+    // console.log(time)
+    if (time > dropInterval) {
+      playerDrop();
+    }
+    draw();
 }
 
 //yang terjadi jika kondisi time > dropinterval
@@ -140,32 +120,65 @@ function playerDrop() {
     time = 0
 }
 
-//membuat matrix berjalan
-let dropInterval = 60;
-let time = 0;
-function update(){
-    time++
-    // console.log(time)
-    if (time > dropInterval) {
-      playerDrop();
+//menggunakan event keydown untuk menentukan keycode untuk menggerakan kekanan dan kiri si potongan tetris
+document.addEventListener('keydown', control);
+function control(event) {
+    if (event.keyCode == 37){
+        playerMove(-1)
+    } else if (event.keyCode == 39){
+        playerMove(+1)
+    } else if (event.keyCode == 40){
+        if(gameRun){
+            playerDrop();
+        }
+    } else if (event.keyCode == 38){
+        playerRotasi (+1)
     }
-    draw();
 }
 
-//menghilangkan bug rotasi kanan kiri atas bawah
-function playerRotasi(dir) {
-    const pos = player.pos.kolom;
-    let offset = 1;
-    rotasi(player.matrix, dir)
-    while (batasPapanGame(arena, player)) {
-        player.pos.kolom += offset;
-        offset = -(offset + (offset > 0 ? 1 : -1));
-        if (offset > player.matrix[0].length) {
-            rotasi(player.matrix, -dir);
-            player.pos.kolom = pos;
-            return;
+//player move kanan dan kiri
+function playerMove(arah) {
+    player.pos.kolom += arah
+    if(batasPapanGame(arena, player))
+    player.pos.kolom -= arah
+}
+
+//create matrix di dalam array agar potongan tetris / matrix berhenti
+function buatMatrix(w, h) {
+    const matrix = [];
+    while (h--) {
+        matrix.push(new Array(w).fill(0))
+    }
+    return matrix;
+}
+
+const arena = buatMatrix(12,20) //jumlah array pada arena 12 kolom 20 baris
+
+//menaruh index ke dalam arena
+function merge(arena, player) {
+    player.matrix.forEach(function (row, baris) {
+        row.forEach(function (value, kolom) {
+            if (value !== 0){
+                arena [baris + player.pos.baris][kolom + player.pos.kolom] = value;
+            }
+        })
+    })
+}
+
+//membuat const arena dan obj player bisa bertabrakan / stuck
+function batasPapanGame(arena, player) {
+    const m = player.matrix
+    const o = player.pos
+    for (let baris = 0; baris < m.length; baris++){
+        for (let kolom = 0; kolom < m[baris].length; kolom++) {
+            if (m [baris][kolom] !== 0 &&
+               (arena [baris + o.baris] && 
+                arena [baris + o.baris][kolom + o.kolom]) !== 0) {
+                return true
+            }
         }
     }
+    return false
 }
 
 //rotasi matrix atau potongan tetris
@@ -183,6 +196,22 @@ function rotasi(matrix, dir) {
         matrix.forEach(row => row.reverse());
     } else {
       matrix.reverse()
+    }
+}
+
+//menghilangkan bug rotasi kanan kiri atas bawah
+function playerRotasi(dir) {
+    const pos = player.pos.kolom;
+    let offset = 1;
+    rotasi(player.matrix, dir)
+    while (batasPapanGame(arena, player)) {
+        player.pos.kolom += offset;
+        offset = -(offset + (offset > 0 ? 1 : -1));
+        if (offset > player.matrix[0].length) {
+            rotasi(player.matrix, -dir);
+            player.pos.kolom = pos;
+            return;
+        }
     }
 }
 
@@ -213,35 +242,6 @@ function sapuArena() {
     ++baris;
     player.score += rowcount * 10;
     rowcount *= 2;
-    }
-}
-
-const player = {
-    pos: {kolom:5, baris:0},
-    matrix: null,
-    score : 0,
-}
-
-//player move kanan dan kiri
-function playerMove(arah) {
-    player.pos.kolom += arah
-    if(batasPapanGame(arena, player))
-    player.pos.kolom -= arah
-}
-
-//menggunakan event keydown untuk menentukan keycode untuk menggerakan kekanan dan kiri si potongan tetris
-document.addEventListener('keydown', control);
-function control(event) {
-    if (event.keyCode == 37){
-        playerMove(-1)
-    } else if (event.keyCode == 39){
-        playerMove(+1)
-    } else if (event.keyCode == 40){
-        if(gameRun){
-            playerDrop();
-        }
-    } else if (event.keyCode == 38){
-        playerRotasi (+1)
     }
 }
 
